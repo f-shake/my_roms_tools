@@ -13,7 +13,7 @@ This toolkit is written for my ROMS related scientific research. All the open co
 
 # 介绍
 
-## 原版COAWST_ TOOLS
+## 原版COAWST_TOOLS
 
 基于COAWST模式附带的工具包，用于制作ROMS模式的预处理文件，以及用于我的项目的分析、绘图。
 
@@ -225,6 +225,319 @@ mfiles目录下是一组Matlab的预处理/后处理工具
 | `get_r`   | 计算皮尔逊相关系数（r）              |
 | `get_mb`  | 计算平均偏差（Mean Bias）            |
 
+
+
+## 项目代码：`my_tools_project`
+
+<a style='color:red'>由于最新项目代码丢失，该版本代码为不知道什么时候备份的一份代码，不同代码的版本存在不一致的情况，无法保证可以正确联调运行，仅供参考。</a>
+
+<a style='color:yellow'>由于最新项目代码丢失，该版本代码为不知道什么时候备份的一份代码，不同代码的版本存在不一致的情况，无法保证可以正确联调运行，仅供参考。</a>
+
+<a style='color:blue'>由于最新项目代码丢失，该版本代码为不知道什么时候备份的一份代码，不同代码的版本存在不一致的情况，无法保证可以正确联调运行，仅供参考。</a>
+
+
+
+| 文件名         | 内容                 |
+| -------------- | -------------------- |
+| `bundle`       | 项目所有代码的集合   |
+| `project_data` | 项目代码的常量、配置 |
+| `show_area`    | 绘制研究区域示意图   |
+
+### 项目1：杭州湾污染物 `hzw`
+
+对应论文：[Simulations of water pollutants in the Hangzhou Bay, China: Hydrodynamics, characteristics, and sources](http://dx.doi.org/10.1016/j.marpolbul.2024.116140)
+
+#### 污染物扩散：`diffuse`
+
+| 文件名                         | 内容                                                 |
+| ------------------------------ | ---------------------------------------------------- |
+| `add_ini_bdy_dye`              | 向初始场和边界场文件中添加示踪剂                     |
+| `adjust_tide`                  | 调整潮汐和分潮的振幅，使其更符合实际                 |
+| `compare`                      | 比较不同污染物、不同季节的模拟结果与观测值对比及绘图 |
+| `compare_single`               | 单个污染物、单个季节的模拟结果与观测值的对比及绘图   |
+| `create_real_emmision_points`  | 基于政府发布数据创建河流源和排污点                   |
+| `read_emmision_table`          | 读取并处理排放清单Excel表格                          |
+| `show_degradation_coefficient` | 显示降解系数的分布                                   |
+| `show_emission_points`         | 绘制排放点位置                                       |
+| `show_value_change`            | 绘制某一个值的变化                                   |
+| `show_year_average`            | 显示各污染物年平均分布                               |
+
+#### 观测数据：`observation`
+
+| 文件名                            | 内容                                                         |
+| --------------------------------- | ------------------------------------------------------------ |
+| `ParseWaterQualityJson`           | 解析从生态环境部下载的海洋水质观测数据JSON的C#工具           |
+| `draw_observations_position`      | 绘制观测点位置                                               |
+| `get_observations`                | 从Excel中读取观测数据                                        |
+| `get_observations_of_all`         | 从`ParseWaterQualityJson`处理结果中读取指定范围和时间的观测数据 |
+| `get_observation_of_cluster`      | 从`ParseWaterQualityJson`处理结果中读取聚类后的数据          |
+| `get_observations_of_site_groups` | 从`ParseWaterQualityJson`处理结果中读取根据站点号分组的观测数据 |
+| `observation_interpolation`       | 观测值插值并绘制地图                                         |
+| `show_obs_and_emis`               | 同时绘制观测点和排放的位置                                   |
+| `show_observations_per_quarter`   | 绘制每个季度的污染物的浓度                                   |
+
+#### 源强估算：`trace`
+
+| 文件名                                            | 内容                                                         |
+| ------------------------------------------------- | ------------------------------------------------------------ |
+| `GridClassificationTool`                          | 用于绘制虚拟排放点的C#写的WPF工具                            |
+| `add_ini_bdy_tracer`                              | 向初始场和边界场中加入示踪剂                                 |
+| `create_manual_virtual_emission_points`           | 创建包含由`GridClassificationTool`创建的虚拟排放点的河流文件 |
+| `create_manual_virtual_emission_points_with_time` | 创建包含由`GridClassificationTool`创建的虚拟排放点的河流文件，排放流量随时间而改变 |
+| `create_virtual_emission_points`                  | 创建包含由代码指定的排放点位置的河流文件                     |
+| `export_mask`                                     | 创建海陆掩膜ASCII文件，供`GridClassificationTool`使用        |
+| `show_contributions`                              | 绘制每个排放区域对研究区域的贡献                             |
+| `trace`                                           | 对每种污染物、每个季节的污染源排放通量或浓度进行溯源，并绘制地图 |
+| `trace_single`                                    | 对单个污染物和季节的污染源排放通量或浓度进行溯源，并绘制地图 |
+
+#### 水动力：`water`
+
+| 文件名             | 内容                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| `DownloadTideData` | 从[海事服务网](https://www.cnss.com.cn/tide/)爬取指定站点的潮高数据 |
+| `show_flow`        | 绘制24小时流场图                                             |
+| `show_tide`        | 进行潮汐验证并绘图                                           |
+
+#### 水交换：`water_exchange`
+
+| 文件名                             | 内容                                     |
+| ---------------------------------- | ---------------------------------------- |
+| `add_water_exchange_dye`           | 向初始场文件中添加用于水交换研究的示踪剂 |
+| `create_water_exchange_rivers`     | 创建用于水交换研究的不含示踪剂浓度的河流 |
+| `get_points_in_range`              | 筛选在指定范围内的点集                   |
+| `show_half_exchange_map`           | 绘制水体半交换时间地图                   |
+| `show_tracer_map`                  | 绘制示踪剂浓度时间序列图                 |
+| `show_tracer_percent_in_each_part` | 绘制不同示踪剂在不同区域中的浓度变化图   |
+
+### 项目2：东海生态 `dh`
+
+对应论文：[Impacts of Coastal Nutrient Increases on the Marine Ecosystem in the East China Sea During 1982–2012: A Coupled Hydrodynamic‐Ecological Modeling Study](http://dx.doi.org/10.1029/2024JC021553)
+
+#### 输入文件制作：`input`
+
+| 文件名                     | 内容                                                         |
+| -------------------------- | ------------------------------------------------------------ |
+| `add_bio_to_rivers`        | 向河流中添加生物河流。在`create_bio_rivers`后执行            |
+| `add_real_bio_varibles`    | 向初始文件、边界文件、气候态文件中加入生物变量，并创建包含生物变量的河流文件 |
+| `create_bio_rivers`        | 创建项目2河流                                                |
+| `get_all_biology_var_info` | 包含需要写入的生物变量的信息                                 |
+
+#### 模型验证及其对比：`compare`
+
+| 文件名                         | 内容                                |
+| ------------------------------ | ----------------------------------- |
+| `compare_chl_with_clm`         | 与气候态文件中的叶绿素进行对比      |
+| `compare_chl_with_CMEMS`       | 与CMEMS再分析资料比较叶绿素         |
+| `compare_chl_with_oceancolour` | 与OceanColour遥感反演资料比较叶绿素 |
+| `compare_SST_with_Argo`        | 与Argo浮标比较温度                  |
+| `compare_SST_with_AVHRR`       | 与AVHRR卫星反演温度数据比较水温     |
+
+#### 绘图：`graph`
+
+| 文件名                          | 内容                             |
+| ------------------------------- | -------------------------------- |
+| `draw_biology_profile`          | 绘制用于该项目的剖面图           |
+| `draw_biology_time_series_maps` | 绘制用于该项目的时间序列地图     |
+| `draw_seasonal_currents`        | 绘制每个季节的海流               |
+| `draw_seasonal_wind`            | 绘制每个季节的风                 |
+| `draw_sensitivity_testing_bars` | 绘制敏感性试验中典型位置的条形图 |
+| `draw_sensitivity_testing_maps` | 绘制敏感性试验中的地图           |
+
+# 核心配置：`config.m`
+
+在进行一切操作之前，首先需要编辑配置文件 `configs.m`。
+
+## 路径
+
+| 用户输入 | 子配置项        | 含义                                            | 格式       |
+| -------- | --------------- | ----------------------------------------------- | ---------- |
+| √       | `project_dir` | 项目目录，进行预处理的目录                      | `string` |
+| √       | `build_dir`   | 模拟文件的输出目录，仅在Linux下直接后处理时指定 | `string` |
+
+## time：时间
+
+| 用户输入 | 子配置项         | 含义                 | 格式                           |
+| -------- | ---------------- | -------------------- | ------------------------------ |
+| √       | `start`        | 开始时间             | `int[6]`，分别为年月日时分秒 |
+| √       | `stop`         | 结束时间             | `int[6]`，分别为年月日时分秒 |
+|          | `start_julian` | 开始时刻的简化儒略日 |                                |
+|          | `stop_julian`  | 结束时刻的简化儒略日 |                                |
+|          | `days`         | 总天数               |                                |
+
+## grid：网格
+
+| 用户输入 | 子配置项        | 含义                        | 格式                                    |
+| -------- | --------------- | --------------------------- | --------------------------------------- |
+| √       | `longitude`   | 经度范围                    | `double[2]`，分别为西侧经度、东侧经度 |
+| √       | `latitude`    | 经度范围                    | `double[2]`，分别为南侧纬度、北侧纬度 |
+| √       | `size`        | 网格大小（分辨率）          | `int[2]`，分别为Lm、Mm                |
+| √       | `N`           | 垂向分层                    | `int`                                 |
+| √       | `theta_s`     | 地形跟随坐标θs参数         | `double`                              |
+| √       | `theta_b`     | 地形跟随坐标θb参数         | `double`                              |
+| √       | `Tcline`      | 地形跟随坐标关键深度参数    | `double`                              |
+| √       | `Hmin`        | 最小深度值                  | `double`                              |
+| √       | `Vtransform`  | 地形跟随坐标Vtransform参数  | `int`                                 |
+| √       | `Vstretching` | 地形跟随坐标Vstretching参数 | `int`                                 |
+
+## input：输入文件
+
+| 用户输入 | 子配置项           | 含义           | 格式       |
+| -------- | ------------------ | -------------- | ---------- |
+| √       | `grid`           | 网格文件       | `string` |
+| √       | `bot`            | 地形文件       | `string` |
+| √       | `force`          | 气象强迫场文件 | `string` |
+| √       | `climatology`    | 气候强迫场文件 | `string` |
+| √       | `initialization` | 初始场文件     | `string` |
+| √       | `boundary`       | 边界场文件     | `string` |
+| √       | `tides`          | 潮汐强迫场文件 | `string` |
+| √       | `rivers`         | 河流文件       | `string` |
+
+## output：输出文件
+
+| 用户输入 | 子配置项    | 含义       | 格式       |
+| -------- | ----------- | ---------- | ---------- |
+| √       | `hisotry` | 历史文件   | `string` |
+| √       | `floats`  | 漂浮子文件 | `string` |
+
+## res：数据资源路径
+
+#### 气象
+
+| 用户输入 | 子配置项                     | 含义                                                         | 格式             |
+| -------- | ---------------------------- | ------------------------------------------------------------ | ---------------- |
+| √        | `force_ncep_dir`             | NCEP FNL数据的文件夹位置<br />需要下载[NCEP的FNL数据](https://rda.ucar.edu/datasets/ds083.2/)，作为气象强迫文件的插值源。 | `string`         |
+| √        | `force_ncep_step`            | 所提供的NCEP FNL数据的时间分辨率                             | `double`（小时） |
+| √        | `force_ncep_radiation_files` | 包含辐射数据的NCEP DS083.3数据的文件通配名                   | `string`         |
+| √        | `force_era5_radiation_file`  | 包含辐射数据的ERA5数据的文件名                               | `string`         |
+
+#### 地形
+
+| 用户输入 | 子配置项                                                     | 含义                                                         | 格式     |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ | -------- |
+| √        | `elevation`                                                  | 全球地形文件，用于网格文件的插值<br />ETOPO1可以从[此处](https://www.ngdc.noaa.gov/mgg/global/)下载，选择Cell/pixel-registered，netCDF，...gmt4.grd.gz<br />SRTM15可以从[此处](https://topex.ucsd.edu/WWW_html/srtm15_plus.html)下载，选择[FTP SRTM15+ and source identification (SID)](https://topex.ucsd.edu/pub/srtm15_plus/)，[SRTM15_V2.4.nc](https://topex.ucsd.edu/pub/srtm15_plus/SRTM15_V2.4.nc) | `string` |
+| √        | `elevation_longitude`<br />`elevation_latitude`<br />`elevation_altitude` | 高程文件中经度、纬度、海拔的字段名                           | `string` |
+| √        | `gshhs_f`                                                    | 全球海岸线文件<br />用于编辑水陆点，可以从[此处](https://www.soest.hawaii.edu/pwessel/gshhg/)下载，选择binary files。 | `string` |
+
+#### 潮汐
+
+| 用户输入 | 子配置项              | 含义                                                         | 格式     |
+| -------- | --------------------- | ------------------------------------------------------------ | -------- |
+| √        | `tpx_uv`<br />`tpx_h` | 潮汐文件<br />用于制作潮汐文件，可以从[此处](https://coawstmodel.sourcerepo.com/coawstmodel/data/tide/)下载。 | `string` |
+| √        | `tpxo9`               | 高精度TPXO9的潮汐文件所在目录                                | `string` |
+| √        | `tpxo9_days`          | 使用TPXO9的潮汐时，指定估计的模拟总时间（天）                | `int`    |
+
+#### 水文（本地）
+
+| 用户输入 | 子配置项                                                     | 含义                                                         | 格式              |
+| -------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------- |
+| √        | `hydrodynamics`                                              | 本地海洋数据的位置                                           | `string`          |
+|          | `hydrodynamics_type`                                         | 本地海洋数据的数据源                                         | `"HYCOM"|"CMEMS"` |
+| √        | `hydrodynamics_step_time_hour`                               | 本地海洋数据的时间分辨率                                     | `double`（小时）  |
+| √        | `_latitude`<br />`_longitude`<br />`_depth`<br />`_time`<br />`_u`<br />`_v`<br />`_temp`<br />`_salt`<br />`_surface_elevation` | 本地海洋数据的经度、纬度、深度、时间、U速度、V速度、温度、盐度、海表高度变量名 | `string`          |
+| √        | `hycom_t0dt`                                                 | 本地海洋数据的基准时间                                       | `datetime`        |
+|          | `hycom_t0`                                                   | 以日为单位存储的本地海洋数据的基准时间                       | `double`          |
+| √        | `hycom_tunit`                                                | 本地海洋数据中1个时间单位表示的时间长度                      | `double`（小时）  |
+
+## tracer：示踪剂
+
+| 用户输入 | 子配置项                                             | 含义                              | 格式                                                                                                          |
+| -------- | ---------------------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| √       | `count`                                            | 示踪剂图层数量                    | `int`                                                                                                       |
+| √       | `age`                                              | 是否启用平均年龄 `AGE_MEAN`功能 | `logical`                                                                                                   |
+| 延迟     | `densities`                                        | 示踪剂的浓度                      | `{double[grid.size(1)+1,grid.size(2)+1,grid.N,tracer.count]}`<br />元胞数组的长度应与配置的示踪剂数量相同。 |
+| 延迟     | `ages`                                             | 示踪剂的初始年龄                  | `{double[grid.size(1)+1,grid.size(2)+1,grid.N,tracer.count]}`<br />元胞数组的长度应与配置的示踪剂数量相同。 |
+| 延迟     | `east`<br />`west`<br />`south`<br />`north` | 边界示踪剂的浓度                  | `{double[grid.size(1/2),grid.N,tracer.count]}`<br />元胞数组的长度应与配置的示踪剂数量相同。                |
+
+## rivers：河流
+
+| 用户输入 | 子配置项               | 含义               | 格式                                                                                                                                                    |
+| -------- | ---------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| √       | `count`              | 河流数量           | `int`                                                                                                                                                 |
+| 延迟     | `location`           | 河流所在的坐标     | `int[rivers.count,2]`<br />行数为河流数量，每一行分别为横坐标和纵坐标。<br />`LuvSrc`时，指的是U/V面的位置；`LwSrc`时，指的是ρ点的位置。         |
+| 延迟     | `direction`          | 流向               | `int[rivers.count,2]`<br />`LuvSrc`时，值为0（U方向）或1（V方向）；`LwSrc`时，值为2                                                               |
+| 延迟     | `time`               | 时间               | `double[]`<br />应覆盖模拟时间段                                                                                                                      |
+| 延迟     | `transport`          | 流量               | `double[rivers.count,grid.N,rivers.time]`<br />`LuvSrc`时，具有正负，正值代表向数值更大的方向流动；`LwSrc`时，恒为正数。<br />单位：$m ^ 3 / s$ |
+| 延迟     | `v_shape`            | 垂向流量分配       | `double[rivers.count,grid.N]`<br />流量在垂直层上的分布的百分比，每一列的总和应当为1。                                                                |
+| 延迟     | `temp`<br />`salt` | 温度<br />盐度     | `double[rivers.count,grid.N,rivers.time]`<br />单位分别为摄氏度、？                                                                                   |
+| 延迟     | `dye`<br />`ages`  | 示踪剂及其初始年龄 | `{double[rivers.count,grid.N,rivers.time]}`<br />元胞数组的长度应与配置的示踪剂数量相同。                                                             |
+
+## biology：生物
+
+| 用户输入 | 子配置项 | 含义             | 格式                |
+| -------- | -------- | ---------------- | ------------------- |
+| √        | `model`  | 所使用的生物模型 | `"fennel"|"cosine"` |
+
+## io：输入输出
+
+| 用户输入 | 子配置项    | 含义           | 格式                                                        |
+| -------- | ----------- | -------------- | ----------------------------------------------------------- |
+| √       | `deflate` | 压缩机别 | `int[0:9]`<br />越大，压缩机别越高，0表示不压缩 |
+| √ | `shuffle` | 压缩时是否开启乱序数据写入 | `logical` |
+
+# 项目配置：`project_data.m`
+
+## 字符串常量：`strs`
+
+| 配置名     | 含义       |
+| ---------- | ---------- |
+| `language` | 语言       |
+| `axis_*`   | 坐标系标签 |
+| `tide_*`   | 潮站名     |
+| `legend_*` | 图例名     |
+| `title_*`  | 图名       |
+
+## 项目通用常量：`projectData`
+
+| 配置名            | 含义                                                       |
+| ----------------- | ---------------------------------------------------------- |
+| `pollutionNames`  | 污染物的名称                                               |
+| `studyRange`      | 研究区域（能完全包含杭州湾的多边形）                       |
+| `obsRange`        | 用于对比和溯源的观测值的选取区域                           |
+| `maxValue`        | 各污染物能够达到的最大浓度（用于绘图）                     |
+| `colormapSteps`   | 各污染物的`colorbar`的段数                                 |
+| `bdy`             | 各污染物的边界强迫浓度                                     |
+| `factor`          | 各指标的污染源（河流、排污口）浓度与海洋（监测）浓度的比值 |
+| `excludeSites`    | 对结果进行对比和评估时，排除的异常值站点的站点号（废弃）   |
+| `emissionList`    | 排放清单Excel文件                                          |
+| `observationInfo` | 水质观测数据CSV文件                                        |
+
+## 源强估算常量：`traceData`
+
+| 配置名             | 含义                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| `obsExtra`         | 额外的虚拟观测站的位置（前两列）和浓度值                     |
+| `partCount`        | 排放区域的数量                                               |
+| `riverPartCount`   | 排放区域中，属于河流的数量                                   |
+| `simFluxs`         | 各区域（列）的每个月份（行）的流量，其中河流使用真实流量，考虑月流量的不同，其他使用恒定值 |
+| `refFluxs`         | 不同污染物（行），不同沿岸排放区域（列）的基于沿海排污数据的参考污染物通量 |
+| `refConcentration` | 不同污染物（行），不同河流排放区域（列）的基于河流水质数据的参考污染物通量 |
+| `partNames`        | 各部分的名称                                                 |
+| `pointPerPart`     | 每个部分的实际排放点数量                                     |
+| `maxValues`        | 各污染物能够达到的最大浓度（用于绘图）                       |
+| `repeat`           | 每个示踪剂的重复生成次数。总的生成示踪剂数量为$(partCount+1) \times repeat$ |
+
+## 生态常量：`bioData`
+
+| 配置名               | 含义                             |
+| -------------------- | -------------------------------- |
+| `tests`              | 敏感性试验案例地址               |
+| `testNames`          | 敏感性试验案例名                 |
+| `locations`          | 典型位置经纬度坐标               |
+| `locationNames`      | 典型位置地名                     |
+| `colorRanges`        | 每类变量在表层的值域             |
+| `profileColorRanges` | 每类变量在绘制剖面图时的值域     |
+| `maxDepth`           | 每类变量在绘制剖面图时的最大深度 |
+| `varName`            | 每个变量的名称                   |
+| `dh`                 | 东海的经纬度坐标范围             |
+
+## 绘图常量：`graphData`
+
+| 配置名                     | 含义                                   |
+| -------------------------- | -------------------------------------- |
+| `*Values/Labels`           | 需要在地图坐标轴上注明的经纬度值和标签 |
+| `landColor`                | 用来表示陆地的颜色                     |
+| `fontSize`/`lagerFontSize` | 字体大小                               |
+| `font`                     | 字体                                   |
 
 # ROMS
 

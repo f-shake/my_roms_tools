@@ -1,0 +1,78 @@
+﻿<Window
+    x:Class="GridClassificationTool.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:FzLib.WPF.Controls;assembly=FzCoreLib.Windows"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:GridClassificationTool"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.modernwpf.com/2019"
+    Title="MainWindow"
+    Width="800"
+    Height="600"
+    ui:WindowHelper.UseModernWindowStyle="True"
+    mc:Ignorable="d">
+    <Grid Margin="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <local:ZoomableBorder ClipToBounds="True">
+            <Viewbox>
+                <Canvas
+                    x:Name="cvs"
+                    Background="Black"
+                    RenderOptions.EdgeMode="Aliased" />
+            </Viewbox>
+        </local:ZoomableBorder>
+        <DockPanel
+            Grid.Column="2"
+            LastChildFill="True">
+            <ui:SimpleStackPanel
+                DockPanel.Dock="Top"
+                Orientation="Vertical"
+                Spacing="8">
+                <Button
+                    x:Name="btnImport"
+                    HorizontalAlignment="Stretch"
+                    Click="btnImport_Click"
+                    Content="导入" />
+                <Button
+                    x:Name="btnExport"
+                    HorizontalAlignment="Stretch"
+                    Click="btnExport_Click"
+                    Content="导出" />
+                <ui:NumberBox
+                    ui:ControlHelper.Header="类别数量"
+                    Value="{Binding TypeCount}" />
+                <Button
+                    x:Name="btnTypeCountOK"
+                    HorizontalAlignment="Stretch"
+                    Click="btnTypeCountOK_Click"
+                    Content="确定" />
+            </ui:SimpleStackPanel>
+            <ScrollViewer
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding GridTypes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton
+                                Foreground="{Binding Color}"
+                                GroupName="r"
+                                IsChecked="{Binding Selected}">
+                                <TextBlock>
+                                    <Run Text="{Binding Index, Mode=OneWay}" />
+                                    <Run Text="（" />
+                                    <Run Text="{Binding Count, Mode=OneWay}" />
+                                    <Run Text="个）" />
+                                </TextBlock>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</Window>
